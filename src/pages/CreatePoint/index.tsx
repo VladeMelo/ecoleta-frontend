@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useCallback, ChangeEvent, useRef } from 'react';
+import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft, FiCheckCircle } from 'react-icons/fi';
 import {Map, TileLayer, Marker} from 'react-leaflet';
 import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
-import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
 import api from '../../services/api';
