@@ -7,6 +7,9 @@ Technologies used:
 * **react-icons**
     
       To use icons
+* **react-router-dom**
+    
+      To navigate between pages
 * **react-slick** and **slick-carousel**
     
       To display a carousel effect
