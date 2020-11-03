@@ -6,21 +6,28 @@ import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
 import { Form } from '@unform/web';
 
-import api from '../../services/api';
+// import api from '../../services/api';
 
 import Input from '../../components/Input';
 import Carousel from '../../components/Carousel';
 import Dropzone from '../../components/Dropzone'
 
+import lampadas from '../../assets/lampadas.svg'
+import baterias from '../../assets/baterias.svg'
+import eletronicos from '../../assets/eletronicos.svg'
+import oleo from '../../assets/oleo.svg'
+import organicos from '../../assets/organicos.svg'
+import papeisPapelao from '../../assets/papeis-papelao.svg'
+
 import './styles.css';
 
 import logo from '../../assets/logo.svg';
 
-interface ItemsProps{
+/*interface ItemsProps{
   id: string;
   title: string;
   image_url: string;
-}
+}*/
 
 interface IBGEUFResponse {
   sigla: string;
@@ -36,9 +43,18 @@ interface SubmitFormData {
   whatsapp: string;
 }
 
+const originalItems = [
+  {title: 'Lâmpadas', image_url: lampadas, id: '1'},
+  {title: 'Pilhas e Baterias', image_url: baterias, id: '2'},
+  {title: 'Papéis e Papelão', image_url: papeisPapelao, id: '3'},
+  {title: 'Resíduos Eletrônicos', image_url: eletronicos, id: '4'},
+  {title: 'Resíduos Orgânicos', image_url: organicos, id: '5'},
+  {title: 'Óleo de Cozinha', image_url: oleo, id: '6'},
+]
+
 const CreatePoint = () => {
 
-  const [items, setItems] = useState<ItemsProps[]>([]);
+  // const [items, setItems] = useState<ItemsProps[]>([...originalItems]);
   const [selectedItems, setSelectedItems] = useState<string[]>([])
 
   const [ufs, setUfs] = useState<string[]>([]);
@@ -66,11 +82,11 @@ const CreatePoint = () => {
     })
   }, [])
 
-  useEffect(() => {
+  /*useEffect(() => {
     api.get('items').then(response => {
       setItems(response.data);
     })
-  }, [])
+  }, [])*/
 
   useEffect(() => {
     axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response => {
@@ -117,13 +133,23 @@ const CreatePoint = () => {
     formData.append('longitude', String(selectedPosition[1]));
     formData.append('items', selectedItems.join(','));
 
-    if (!selectedFile) {
-      alert('Faltando a imagem');
+    if (!selectedFile || !selectedUF || !selectedCity || !selectedPosition[0] || !selectedPosition[1]) {
+      alert('Preencha os campos!');
       return;
     }
+
     formData.append('image', selectedFile);
 
-    try {
+    setShowModal(true);
+
+    await new Promise(resolve => {
+      setTimeout(resolve, 3000);
+    })
+
+    setShowModal(false);
+    history.push('/');
+
+    /*try {
       await api.post('points', formData);
 
       setShowModal(true);
@@ -136,7 +162,7 @@ const CreatePoint = () => {
       history.push('/');
     } catch (err) {
       alert('ERRO');
-    }
+    }*/
 
   }, [selectedCity, selectedItems, selectedPosition, selectedUF, history, selectedFile])
 
@@ -253,12 +279,12 @@ const CreatePoint = () => {
 
             {modeCarousel
               ? <Carousel
-                  items={items}
+                  items={originalItems}
                   selectedItems={selectedItems}
                   handleSelectItem={handleSelectItem}
                 />
               : <ul className="items-grid">
-                  {items.map(item => (
+                  {originalItems.map(item => (
                     <li 
                       key={item.id}
                       onClick={() => handleSelectItem(item.id)}
